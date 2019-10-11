@@ -1,7 +1,7 @@
-// const RAD2DEG = 180 / Math.PI
+const RAD2DEG = 180 / Math.PI
 const DEG2RAD = Math.PI / 180
 
-export function targetTo({ x, z, camera, controls }) {
+export function changePosition({ x, z, camera, controls }) {
     const diffX = controls.target.x - x
     const diffZ = controls.target.z - z
     controls.target.setX(x)
@@ -10,11 +10,11 @@ export function targetTo({ x, z, camera, controls }) {
     camera.position.setZ(camera.position.z - diffZ)
 }
 
-export function changePolarToCartesian({
-    angleV,
-    angleH,
+export function changeRotation({
     camera,
     controls,
+    angleV = controls.getPolarAngle() * RAD2DEG,
+    angleH = controls.getAzimuthalAngle() * RAD2DEG,
     distance = camera.position.distanceTo(controls.target)
 }) {
     const point = polarToCartesian(angleV, angleH, distance)

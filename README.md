@@ -8,9 +8,9 @@
 import * as THREE from 'three'
 import OrbitControls from 'three-orbitcontrols'
 import {
-    changePolarToCartesian,
+    changeRotation,
+    changePosition,
     createLimitPan,
-    targetTo
 } from '@ocio/three-camera-utils'
 
 const camera = new THREE.PerspectiveCamera(
@@ -21,11 +21,11 @@ const camera = new THREE.PerspectiveCamera(
 )
 const controls = new OrbitControls(camera, renderer.domElement);
 
-// changePolarToCartesian
-changePolarToCartesian({ angleV: 45, angleH: 45, controls, camera });
+// changeRotation
+changeRotation({ angleV: 45, angleH: 45, distance:100, controls, camera });
 
-// targetTo
-targetTo({ x: 0, z: 0, camera, controls })
+// changePosition
+changePosition({ x: 0, z: 0, camera, controls })
 
 // limitPan
 const limitPan = createLimitPan({ camera, controls });
