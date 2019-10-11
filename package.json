@@ -1,0 +1,21 @@
+{
+    "name": "@ocio/three-camera-utils",
+    "version": "1.0.0",
+    "main": "dist/three-camera-utils.cjs.js",
+    "module": "dist/three-camera-utils.esm.js",
+    "browser": "dist/three-camera-utils.umd.js",
+    "dependencies": {},
+    "devDependencies": {
+        "babel-core": "^6.26.3",
+        "babel-plugin-external-helpers": "^6.22.0",
+        "babel-preset-env": "^1.7.0",
+        "rollup": "^1.0.0",
+        "rollup-plugin-babel": "^3.0.7",
+        "rollup-plugin-commonjs": "^9.2.0",
+        "rollup-plugin-node-resolve": "^4.0.0"
+    },
+    "scripts": {
+        "build": "rollup -c",
+        "dev": "rollup -c -w"
+    }
+}
