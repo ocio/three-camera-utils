@@ -26,49 +26,61 @@ export function changeRotation({
     controls.update()
 }
 
-// https://discourse.threejs.org/t/how-to-limit-pan-in-orbitcontrols-for-orthographiccamera/9061/5
+// https://discourse.threejs.org/t/how-to-limit-pan-in-orbitcontrols-for-orthographiccamera/9061/7
 export function createLimitPan({ camera, controls }) {
-    // State
-    let positionX
-    let positionZ
-    let phi
-    let theta
+    const v = new THREE.Vector3()
     return ({
         maxX = Infinity,
         minX = -Infinity,
         maxZ = Infinity,
         minZ = -Infinity
     }) => {
-        const x = controls.target.x
-        const z = controls.target.z
-        let shallWeUpdateAngle = false
-
-        if (x < minX || x > maxX) {
-            controls.target.setX(x < minX ? minX : maxX)
-            camera.position.setX(positionX)
-            shallWeUpdateAngle = true
-        }
-        if (z < minZ || z > maxZ) {
-            controls.target.setZ(z < minZ ? minZ : maxZ)
-            camera.position.setZ(positionZ)
-            shallWeUpdateAngle = true
-        }
-
-        if (shallWeUpdateAngle) {
-            const distance = camera.position.distanceTo(controls.target)
-            camera.position.set(
-                distance * Math.sin(phi) * Math.sin(theta) + controls.target.x,
-                distance * Math.cos(phi) + controls.target.y,
-                distance * Math.sin(phi) * Math.cos(theta) + controls.target.z
-            )
-        }
-
-        // Updating state
-        positionX = camera.position.x
-        positionZ = camera.position.z
-        phi = controls.getPolarAngle()
-        theta = controls.getAzimuthalAngle()
+        const minPan = new THREE.Vector3(-minX, -Infinity, -maxZ)
+        const maxPan = new THREE.Vector3(maxX, Infinity, minZ)
+        v.copy(controls.target)
+        controls.target.clamp(minPan, maxPan)
+        v.sub(controls.target)
+        camera.position.sub(v)
     }
+
+    // // State
+    // let positionX
+    // let positionZ
+    // let phi
+    // let theta
+    // return ({
+    //     maxX = Infinity,
+    //     minX = -Infinity,
+    //     maxZ = Infinity,
+    //     minZ = -Infinity
+    // }) => {
+    //     const x = controls.target.x
+    //     const z = controls.target.z
+    //     let shallWeUpdateAngle = false
+    //     if (x < minX || x > maxX) {
+    //         controls.target.setX(x < minX ? minX : maxX)
+    //         camera.position.setX(positionX)
+    //         shallWeUpdateAngle = true
+    //     }
+    //     if (z < minZ || z > maxZ) {
+    //         controls.target.setZ(z < minZ ? minZ : maxZ)
+    //         camera.position.setZ(positionZ)
+    //         shallWeUpdateAngle = true
+    //     }
+    //     if (shallWeUpdateAngle) {
+    //         const distance = camera.position.distanceTo(controls.target)
+    //         camera.position.set(
+    //             distance * Math.sin(phi) * Math.sin(theta) + controls.target.x,
+    //             distance * Math.cos(phi) + controls.target.y,
+    //             distance * Math.sin(phi) * Math.cos(theta) + controls.target.z
+    //         )
+    //     }
+    //     // Updating state
+    //     positionX = camera.position.x
+    //     positionZ = camera.position.z
+    //     phi = controls.getPolarAngle()
+    //     theta = controls.getAzimuthalAngle()
+    // }
 }
 
 // https://gist.github.com/jhermsmeier/72626d5fd79c5875248fd2c1e8162489
