@@ -27,7 +27,7 @@ export function changeRotation({
 }
 
 // https://discourse.threejs.org/t/how-to-limit-pan-in-orbitcontrols-for-orthographiccamera/9061/7
-export function createLimitPan({ camera, controls }) {
+export function createLimitPan({ camera, controls, THREE }) {
     const v = new THREE.Vector3()
     return ({
         maxX = Infinity,
