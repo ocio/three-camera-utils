@@ -35,8 +35,8 @@ export function createLimitPan({ camera, controls, THREE }) {
         maxZ = Infinity,
         minZ = -Infinity
     }) => {
-        const minPan = new THREE.Vector3(-minX, -Infinity, -maxZ)
-        const maxPan = new THREE.Vector3(maxX, Infinity, minZ)
+        const minPan = new THREE.Vector3(minX, -Infinity, minZ)
+        const maxPan = new THREE.Vector3(maxX, Infinity, maxZ)
         v.copy(controls.target)
         controls.target.clamp(minPan, maxPan)
         v.sub(controls.target)
