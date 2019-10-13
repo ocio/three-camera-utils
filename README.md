@@ -28,7 +28,7 @@ changeRotation({ angleV: 45, angleH: 45, distance:100, controls, camera });
 changePosition({ x: 0, z: 0, camera, controls })
 
 // limitPan
-const limitPan = createLimitPan({ camera, controls });
+const limitPan = createLimitPan({ camera, controls, THREE });
 controls.addEventListener("change", e => {
   limitPan({ maxX: 25, maxZ: 25 });
 });
