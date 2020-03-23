@@ -123,21 +123,19 @@ export function worldToScreen({
 export function screenToWorld({
     x,
     y,
-    camera,
     canvasWidth,
     canvasHeight,
-    objects,
+    camera,
     THREE
 }) {
-    const mouse = new THREE.Vector3(
-        (x / canvasWidth) * 2 - 1, //x
-        -(y / canvasHeight) * 2 + 1, //y
+    const coords = new THREE.Vector3(
+        (x / canvasWidth) * 2 - 1,
+        -(y / canvasHeight) * 2 + 1,
         0.5
     )
-
+    const worldPosition = new THREE.Vector3()
+    const plane = new THREE.Plane(new THREE.Vector3(0.0, 1.0, 0.0))
     const raycaster = new THREE.Raycaster()
-    raycaster.setFromCamera(mouse, camera)
-    const intersects = raycaster.intersectObjects(objects)
-
-    return intersects
+    raycaster.setFromCamera(coords, camera)
+    return raycaster.ray.intersectPlane(plane, worldPosition)
 }
