@@ -15,7 +15,7 @@ export function changeRotation({
     controls,
     angleV = controls.getPolarAngle() * RAD2DEG,
     angleH = controls.getAzimuthalAngle() * RAD2DEG,
-    distance = camera.position.distanceTo(controls.target)
+    distance = camera.position.distanceTo(controls.target),
 }) {
     const point = polarToCartesian(angleV, angleH, distance)
     camera.position.set(
@@ -27,17 +27,17 @@ export function changeRotation({
 }
 
 // https://discourse.threejs.org/t/how-to-limit-pan-in-orbitcontrols-for-orthographiccamera/9061/7
+const v = new THREE.Vector3()
+const minPan = new THREE.Vector3()
+const maxPan = new THREE.Vector3()
 export function createLimitPan({ camera, controls, THREE }) {
-    const v = new THREE.Vector3()
-    const minPan = new THREE.Vector3()
-    const maxPan = new THREE.Vector3()
     return ({
         maxX = Infinity,
         minX = -Infinity,
         maxY = Infinity,
         minY = -Infinity,
         maxZ = Infinity,
-        minZ = -Infinity
+        minZ = -Infinity,
     }) => {
         minPan.set(minX, minY, minZ)
         maxPan.set(maxX, maxY, maxZ)
@@ -94,8 +94,14 @@ export function polarToCartesian(angleV, angleH, radius) {
     return {
         x: radius * Math.sin(phi) * Math.sin(theta),
         y: radius * Math.cos(phi),
-        z: radius * Math.sin(phi) * Math.cos(theta)
+        z: radius * Math.sin(phi) * Math.cos(theta),
     }
+}
+export function cartesianToPolar(coord) {
+    const lon = Math.atan2(coord.x, coord.z) * RAD2DEG
+    const length = Math.sqrt(coord.x * coord.x + coord.z * coord.z)
+    const lat = Math.atan2(coord.y, length) * RAD2DEG
+    return [lon, lat]
 }
 
 // https://stackoverflow.com/questions/27409074/converting-3d-position-to-2d-screen-position-r69
@@ -106,7 +112,7 @@ export function worldToScreen({
     camera,
     canvasWidth,
     canvasHeight,
-    THREE
+    THREE,
 }) {
     const vector = new THREE.Vector3(x, y, z)
     const widthHalf = canvasWidth / 2
@@ -120,22 +126,23 @@ export function worldToScreen({
 }
 
 // https://stackoverflow.com/questions/34660063/threejs-converting-from-screen-2d-coordinate-to-world-3d-coordinate-on-the-cane
+// https://discourse.threejs.org/t/convert-screen-2d-to-world-3d-coordiate-system-without-using-raycaster/13739/7
+const worldPosition = new THREE.Vector3()
+const plane = new THREE.Plane(new THREE.Vector3(0.0, 1.0, 0.0))
+const raycaster = new THREE.Raycaster()
 export function screenToWorld({
     x,
     y,
     canvasWidth,
     canvasHeight,
     camera,
-    THREE
+    THREE,
 }) {
     const coords = new THREE.Vector3(
         (x / canvasWidth) * 2 - 1,
         -(y / canvasHeight) * 2 + 1,
         0.5
     )
-    const worldPosition = new THREE.Vector3()
-    const plane = new THREE.Plane(new THREE.Vector3(0.0, 1.0, 0.0))
-    const raycaster = new THREE.Raycaster()
     raycaster.setFromCamera(coords, camera)
     return raycaster.ray.intersectPlane(plane, worldPosition)
 }
