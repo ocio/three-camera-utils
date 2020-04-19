@@ -27,10 +27,10 @@ export function changeRotation({
 }
 
 // https://discourse.threejs.org/t/how-to-limit-pan-in-orbitcontrols-for-orthographiccamera/9061/7
-const v = new THREE.Vector3()
-const minPan = new THREE.Vector3()
-const maxPan = new THREE.Vector3()
 export function createLimitPan({ camera, controls, THREE }) {
+    const v = new THREE.Vector3()
+    const minPan = new THREE.Vector3()
+    const maxPan = new THREE.Vector3()
     return ({
         maxX = Infinity,
         minX = -Infinity,
@@ -127,9 +127,6 @@ export function worldToScreen({
 
 // https://stackoverflow.com/questions/34660063/threejs-converting-from-screen-2d-coordinate-to-world-3d-coordinate-on-the-cane
 // https://discourse.threejs.org/t/convert-screen-2d-to-world-3d-coordiate-system-without-using-raycaster/13739/7
-const worldPosition = new THREE.Vector3()
-const plane = new THREE.Plane(new THREE.Vector3(0.0, 1.0, 0.0))
-const raycaster = new THREE.Raycaster()
 export function screenToWorld({
     x,
     y,
@@ -138,6 +135,9 @@ export function screenToWorld({
     camera,
     THREE,
 }) {
+    const worldPosition = new THREE.Vector3()
+    const plane = new THREE.Plane(new THREE.Vector3(0.0, 1.0, 0.0))
+    const raycaster = new THREE.Raycaster()
     const coords = new THREE.Vector3(
         (x / canvasWidth) * 2 - 1,
         -(y / canvasHeight) * 2 + 1,
