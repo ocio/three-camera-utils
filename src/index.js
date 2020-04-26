@@ -1,12 +1,11 @@
-const RAD2DEG = 180 / Math.PI
-const DEG2RAD = Math.PI / 180
+import * as THREE from 'three'
 
 export function radToDeg(rad) {
-    return rad * RAD2DEG
+    return rad * (180 / Math.PI)
 }
 
 export function degToRad(deg) {
-    return deg * DEG2RAD
+    return deg * (Math.PI / 180)
 }
 
 export function changePosition({ x, z, camera, controls }) {
@@ -21,11 +20,11 @@ export function changePosition({ x, z, camera, controls }) {
 export function changeRotation({
     camera,
     controls,
-    angleV = controls.getPolarAngle() * RAD2DEG,
-    angleH = controls.getAzimuthalAngle() * RAD2DEG,
+    vertical = controls.getPolarAngle(),
+    horizontal = controls.getAzimuthalAngle(),
     distance = camera.position.distanceTo(controls.target),
 }) {
-    const point = polarToCartesian(angleV, angleH, distance)
+    const point = polarToCartesian(vertical, horizontal, distance)
     camera.position.set(
         point.x + controls.target.x,
         point.y + controls.target.y,
@@ -35,32 +34,26 @@ export function changeRotation({
 }
 
 // https://gist.github.com/jhermsmeier/72626d5fd79c5875248fd2c1e8162489
-export function polarToCartesian(angleV, angleH, radius) {
-    const phi = angleV * DEG2RAD
-    const theta = angleH * DEG2RAD
-    return {
-        x: radius * Math.sin(phi) * Math.sin(theta),
-        y: radius * Math.cos(phi),
-        z: radius * Math.sin(phi) * Math.cos(theta),
-    }
+export function sphericalToCartesian({ horizontal, vertical, radius = 1 }) {
+    const theta = horizontal
+    const phi = vertical
+    const vector = new THREE.Vector3()
+    vector.setFromSphericalCoords(radius, phi, theta)
+    return vector
 }
-export function cartesianToPolar({ x, y, z }) {
-    const angleH = Math.atan2(x, z) * RAD2DEG
-    const length = Math.sqrt(x * x + z * z)
-    const angleV = Math.atan2(y, length) * RAD2DEG
-    return { angleH, angleV }
+
+export function cartesianToSpherical({ x, y, z }) {
+    const sphere = new THREE.Spherical()
+    sphere.setFromCartesianCoords(x, y, z)
+    return {
+        vertical: sphere.phi,
+        horizontal: sphere.theta,
+        radius: sphere.radius,
+    }
 }
 
 // https://stackoverflow.com/questions/27409074/converting-3d-position-to-2d-screen-position-r69
-export function worldToScreen({
-    x,
-    y,
-    z,
-    camera,
-    canvasWidth,
-    canvasHeight,
-    THREE,
-}) {
+export function worldToScreen({ x, y, z, camera, canvasWidth, canvasHeight }) {
     const vector = new THREE.Vector3(x, y, z)
     const widthHalf = canvasWidth / 2
     const heightHalf = canvasHeight / 2
@@ -74,16 +67,9 @@ export function worldToScreen({
 
 // https://stackoverflow.com/questions/34660063/threejs-converting-from-screen-2d-coordinate-to-world-3d-coordinate-on-the-cane
 // https://discourse.threejs.org/t/convert-screen-2d-to-world-3d-coordiate-system-without-using-raycaster/13739/7
-export function screenToWorld({
-    x,
-    y,
-    canvasWidth,
-    canvasHeight,
-    camera,
-    THREE,
-}) {
-    const worldPosition = new THREE.Vector3()
-    const plane = new THREE.Plane(new THREE.Vector3(0.0, 1.0, 0.0))
+const worldPosition = new THREE.Vector3()
+const plane = new THREE.Plane(new THREE.Vector3(0.0, 1.0, 0.0))
+export function screenToWorld({ x, y, canvasWidth, canvasHeight, camera }) {
     const raycaster = new THREE.Raycaster()
     const coords = new THREE.Vector3(
         (x / canvasWidth) * 2 - 1,
@@ -95,7 +81,7 @@ export function screenToWorld({
 }
 
 // https://discourse.threejs.org/t/how-to-limit-pan-in-orbitcontrols-for-orthographiccamera/9061/7
-export function createLimitPan({ camera, controls, THREE }) {
+export function createLimitPan({ camera, controls }) {
     const v = new THREE.Vector3()
     const minPan = new THREE.Vector3()
     const maxPan = new THREE.Vector3()
@@ -114,43 +100,4 @@ export function createLimitPan({ camera, controls, THREE }) {
         v.sub(controls.target)
         camera.position.sub(v)
     }
-
-    // // State
-    // let positionX
-    // let positionZ
-    // let phi
-    // let theta
-    // return ({
-    //     maxX = Infinity,
-    //     minX = -Infinity,
-    //     maxZ = Infinity,
-    //     minZ = -Infinity
-    // }) => {
-    //     const x = controls.target.x
-    //     const z = controls.target.z
-    //     let shallWeUpdateAngle = false
-    //     if (x < minX || x > maxX) {
-    //         controls.target.setX(x < minX ? minX : maxX)
-    //         camera.position.setX(positionX)
-    //         shallWeUpdateAngle = true
-    //     }
-    //     if (z < minZ || z > maxZ) {
-    //         controls.target.setZ(z < minZ ? minZ : maxZ)
-    //         camera.position.setZ(positionZ)
-    //         shallWeUpdateAngle = true
-    //     }
-    //     if (shallWeUpdateAngle) {
-    //         const distance = camera.position.distanceTo(controls.target)
-    //         camera.position.set(
-    //             distance * Math.sin(phi) * Math.sin(theta) + controls.target.x,
-    //             distance * Math.cos(phi) + controls.target.y,
-    //             distance * Math.sin(phi) * Math.cos(theta) + controls.target.z
-    //         )
-    //     }
-    //     // Updating state
-    //     positionX = camera.position.x
-    //     positionZ = camera.position.z
-    //     phi = controls.getPolarAngle()
-    //     theta = controls.getAzimuthalAngle()
-    // }
 }
