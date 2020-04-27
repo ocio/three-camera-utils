@@ -15,18 +15,18 @@ test('Basic', (t) => {
     const spherical = cartesianToSpherical(cartesian)
     t.is(Math.round(radToDeg(spherical.horizontal)), angleh)
     t.is(Math.round(radToDeg(spherical.vertical)), anglev)
-    t.is(Math.round(spherical.radius), 1)
+    t.is(Math.round(spherical.distance), 1)
 })
 
 test('Basic 2', (t) => {
     const angleh = 181
     const anglev = 180
-    const radius = 100
+    const distance = 100
     const horizontal = degToRad(angleh)
     const vertical = degToRad(anglev)
-    const cartesian = sphericalToCartesian({ horizontal, vertical, radius })
+    const cartesian = sphericalToCartesian({ horizontal, vertical, distance })
     const spherical = cartesianToSpherical(cartesian)
     t.is(Math.round(radToDeg(spherical.horizontal)), -179)
     t.is(Math.round(radToDeg(spherical.vertical)), anglev)
-    t.is(Math.round(spherical.radius), radius)
+    t.is(Math.round(spherical.distance), distance)
 })

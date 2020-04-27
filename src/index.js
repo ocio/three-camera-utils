@@ -24,7 +24,7 @@ export function changeRotation({
     horizontal = controls.getAzimuthalAngle(),
     distance = camera.position.distanceTo(controls.target),
 }) {
-    const point = polarToCartesian(vertical, horizontal, distance)
+    const point = sphericalToCartesian({ vertical, horizontal, distance })
     camera.position.set(
         point.x + controls.target.x,
         point.y + controls.target.y,
@@ -34,11 +34,11 @@ export function changeRotation({
 }
 
 // https://gist.github.com/jhermsmeier/72626d5fd79c5875248fd2c1e8162489
-export function sphericalToCartesian({ horizontal, vertical, radius = 1 }) {
+export function sphericalToCartesian({ horizontal, vertical, distance = 1 }) {
     const theta = horizontal
     const phi = vertical
     const vector = new THREE.Vector3()
-    vector.setFromSphericalCoords(radius, phi, theta)
+    vector.setFromSphericalCoords(distance, phi, theta)
     return vector
 }
 
@@ -48,7 +48,7 @@ export function cartesianToSpherical({ x, y, z }) {
     return {
         vertical: sphere.phi,
         horizontal: sphere.theta,
-        radius: sphere.radius,
+        distance: sphere.radius,
     }
 }
 
