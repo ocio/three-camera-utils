@@ -1,9 +1,8 @@
 {
     "name": "@ocio/three-camera-utils",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "main": "dist/three-camera-utils.cjs.js",
     "module": "dist/three-camera-utils.esm.js",
-    "browser": "dist/three-camera-utils.umd.js",
     "dependencies": {
         "three": "^0.115.0"
     },

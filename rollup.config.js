@@ -14,20 +14,20 @@ export default [
         ],
     },
 
-    // UMD
-    {
-        input: 'src/index',
-        output: {
-            name: 'howLongUntilLunch',
-            file: pkg.browser,
-            format: 'umd',
-        },
-        plugins: [
-            resolve(), // so Rollup can find `ms`
-            babel({
-                exclude: 'node_modules/**',
-            }),
-            commonjs(), // so Rollup can convert `ms` to an ES module
-        ],
-    },
+    // // UMD
+    // {
+    //     input: 'src/index',
+    //     output: {
+    //         name: 'howLongUntilLunch',
+    //         file: pkg.browser,
+    //         format: 'umd',
+    //     },
+    //     plugins: [
+    //         resolve(), // so Rollup can find `ms`
+    //         babel({
+    //             exclude: 'node_modules/**',
+    //         }),
+    //         commonjs(), // so Rollup can convert `ms` to an ES module
+    //     ],
+    // },
 ]
