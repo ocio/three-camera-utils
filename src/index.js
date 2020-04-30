@@ -64,7 +64,9 @@ export function cartesianToSphericalByControls(controls) {
 }
 
 export function getRotationFromPoints(from, to) {
-    return Math.atan2(to.x - from.x, to.y - from.y)
+    return convertNegativeRadianIntoDouble(
+        Math.atan2(to.x - from.x, to.y - from.y)
+    )
 }
 
 // https://stackoverflow.com/questions/27409074/converting-3d-position-to-2d-screen-position-r69
