@@ -8,6 +8,10 @@ export function degToRad(deg) {
     return deg * (Math.PI / 180)
 }
 
+export function convertNegativeRadianIntoDouble(rad, max = Math.PI) {
+    return rad < 0 ? max * 2 + rad : rad
+}
+
 export function changePosition({ x, z, camera, controls }) {
     const diffX = controls.target.x - x
     const diffZ = controls.target.z - z
