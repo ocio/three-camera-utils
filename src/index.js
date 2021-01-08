@@ -65,7 +65,7 @@ export function cartesianToSphericalByControls(controls) {
 
 export function getRotationFromPoints(from, to) {
     return convertNegativeRadianIntoDouble(
-        Math.atan2(to.x - from.x, to.y - from.y)
+        Math.atan2(from.x - to.x, from.y - to.y)
     )
 }
 
